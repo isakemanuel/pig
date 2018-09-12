@@ -21,7 +21,7 @@ public class Pig {
     void program() {
         //test();                 // <-------------- Uncomment to run tests!
 
-        final int winPts = 20;    // Points to win
+        final int winPts = 100;    // Points to win
         //Player[] players;         // The players (array of Player objects)
         List<Player> players = new ArrayList<Player>();
         Player actual;            // Actual player for round (must use)
@@ -71,7 +71,9 @@ public class Pig {
             }else{
                 statusMsg(players);
                 //TODO Improve logic to change current player to fit with more than 2 players
-                actual = players.get(0) == actual ? players.get(1) :  players.get(0);
+                int actualIndex = players.indexOf(actual);
+                int nPlayers = players.size();
+                actual = players.get((actualIndex + 1) % nPlayers);
             }
 
         }
@@ -181,7 +183,7 @@ public class Pig {
                 e.printStackTrace();
             }
             String choice = "n";
-            if (this.roundPts < 4){
+            if (this.roundPts < 20){
                 choice = "r";
             }
             out.println("\n" + this.name + " chose: " + choice);
