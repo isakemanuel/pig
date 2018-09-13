@@ -22,34 +22,31 @@ public class Pig {
         //test();                 // <-------------- Uncomment to run tests!
 
         final int winPts = 100;    // Points to win
-        //Player[] players;         // The players (array of Player objects)
-        List<Player> players = new ArrayList<Player>();
+        List<Player> players; // List of players
         Player actual;            // Actual player for round (must use)
         boolean aborted = false;  // Game aborted by player?
         boolean gameOver = false;
 
 
-        players = getPlayers();  // Prompt user to input amount and name of players
+        welcomeMsg(winPts); // Welcome the user and inform them of the win condition
+        players = getPlayers(); // Initialize the list of players with IO method prompting user to enter amount and name of players
+        int nPlayers = players.size();
+        statusMsg(players); // Print the current score (0 for everyone)
+        actual = players.get(0); // Set the actual player to the first one in the list
 
-        welcomeMsg(winPts);
-        statusMsg(players);
-        actual = players.get(0);
 
-
-        // TODO Game logic, using small step, functional decomposition
-
-        while(!gameOver && !aborted){
+        while (!gameOver && !aborted) {
             boolean turnOver = false;
 
-            while(!turnOver){
-                String choiceAsString = getPlayerChoice(actual, players);
-                char choice = choiceAsString.charAt(0);
-                switch(choice){
+            while (!turnOver) {
+                String choiceAsString = getPlayerChoice(actual, players); // Ask the user what they want their action to be
+                char choice = choiceAsString.charAt(0); // Get the first letter typed by the user as a char
+                switch (choice) { // Interpret the letter typed and act accordingly
                     case 'r':
                         int roll = rollDice();
-                        if (roll != 1){
+                        if (roll != 1) {
                             actual.roundPts += roll;
-                        }else{
+                        } else {
                             actual.roundPts = 0;
                             turnOver = true;
                         }
@@ -66,18 +63,15 @@ public class Pig {
                         break;
                 }
             }
-            if (actual.totalPts >= winPts){
+            if (actual.totalPts >= winPts) { // After the player is finished with their turn, check if they have won
                 gameOver = true;
-            }else{
-                statusMsg(players);
-                //TODO Improve logic to change current player to fit with more than 2 players
-                int actualIndex = players.indexOf(actual);
-                int nPlayers = players.size();
-                actual = players.get((actualIndex + 1) % nPlayers);
+            } else { // If the game isn't over...
+                statusMsg(players); // Print the score
+                int actualIndex = players.indexOf(actual); // Get the index of the current player in the list
+                actual = players.get((actualIndex + 1) % nPlayers); // Change "current" player to the next one in the list
             }
 
         }
-
 
 
         gameOverMsg(actual, aborted);
@@ -85,7 +79,10 @@ public class Pig {
 
     // ---- Game logic methods --------------
 
-    // TODO
+    int rollDice() {
+        int diceRoll = rand.nextInt(5) + 1; // Get a random integer between 1 and 6 (inclusive)
+        return diceRoll;
+    }
 
     // ---- IO methods ------------------
 
@@ -102,11 +99,6 @@ public class Pig {
             out.print(players.get(i).name + " = " + players.get(i).totalPts + " ");
         }
         out.println();
-    }
-
-    int rollDice(){
-        int diceRoll = rand.nextInt(5) + 1;
-        return diceRoll;
     }
 
     void roundMsg(int result, Player actual) {
@@ -129,9 +121,9 @@ public class Pig {
     String getPlayerChoice(Player player, List<Player> players) {
         out.print("Player is " + player.name + " > ");
         String choice;
-        if (!player.isComputer){
+        if (!player.isComputer) {
             choice = sc.nextLine();
-        }else{
+        } else {
             choice = player.getComputedChoice(players);
         }
         return choice;
@@ -148,12 +140,12 @@ public class Pig {
         int numberOfComputers = sc.nextInt();
         sc.nextLine();
 
-        for(int i = 0; i < numberOfPlayers; i++){
-            out.print("Name for player " + (i+1) + " > ");
+        for (int i = 0; i < numberOfPlayers; i++) {
+            out.print("Name for player " + (i + 1) + " > ");
             String name = sc.nextLine();
             players.add(new Player(name, false));
         }
-        for(int i = 0; i < numberOfComputers; i++){
+        for (int i = 0; i < numberOfComputers; i++) {
             //out.print("Name for computer " + (i+1) + " > ");
             String name = "Computer " + i;
             players.add(new Player(name, true));
@@ -183,7 +175,7 @@ public class Pig {
                 e.printStackTrace();
             }
             String choice = "n";
-            if (this.roundPts < 20){
+            if (this.roundPts < 20) {
                 choice = "r";
             }
             out.println("\n" + this.name + " chose: " + choice);
@@ -191,13 +183,13 @@ public class Pig {
         }
     }
 
+
     // ----- Testing -----------------
     // Here you run your tests i.e. call your game logic methods
     // to see that they really work (IO methods not tested here)
     void test() {
         // This is hard coded test data, an array of Players 
         //Player[] players = {new Player("a"), new Player("b"), new Player("c")};
-
 
 
         exit(0);   // End program
